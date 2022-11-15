@@ -1,1 +1,1 @@
-// node project including aggregations and authorization and authentication
+// basic node project including aggregations, auth, CRED operations
