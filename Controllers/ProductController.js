@@ -1,12 +1,22 @@
 const Products = require("../Models/ProductModel")
+const client = require("../redisConnection.js")
 
 module.exports = {
     getProducts: async (req, res, next) => {
-      console.log(req.body,"controller");
       const { gender } = req.body
-      console.log(gender,'gender');
+      let redis_key;
+      let result;
+      if(gender.includes('0') && gender.includes('1')){
+        redis_key = 'common'
+      }else if(gender.includes('0')){
+        redis_key = 'male_prd'
+      }else if(gender.includes('1')){
+        redis_key = 'female_prd'
+      }
         try {
-            const result = await Products.aggregate([
+          result = await client.json.get(redis_key)
+          if(!result){
+            result = await Products.aggregate([
               {
                 $match: {
                     category: {
@@ -22,7 +32,9 @@ module.exports = {
                 },
               }
             ]);
+          }
             res.send(result)
+            client.json.set(redis_key,'.',result)
         } catch (error) {
             console.log(error,'erron - getAllUsers');
         }

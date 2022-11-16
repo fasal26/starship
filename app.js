@@ -4,6 +4,7 @@ const createError = require("http-errors");
 const jwt = require("jsonwebtoken");
 
 require("./dbConnection.js")();
+require("./redisConnection.js");
 
 const app = express();
 app.use(express.json());
